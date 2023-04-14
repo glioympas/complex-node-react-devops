@@ -10,7 +10,14 @@ script:
   - docker run -e CI=true glioympas/react-test npm test
 
 after_success:
+  # Build Images
   - docker build -t glioympas/multi-client ./client
   - docker build -t glioympas/multi-nginx ./nginx
   - docker build -t glioympas/multi-server ./server
   - docker build -t glioympas/multi-worker ./worker
+  # Push to Hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push glioympas/multi-client
+  - docker push glioympas/multi-nginx
+  - docker push glioympas/multi-server
+  - docker push glioympas/multi-worker
